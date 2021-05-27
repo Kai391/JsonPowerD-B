@@ -139,7 +139,7 @@ function saveEmployee() {
     var putReqStr = createPUTRequest("90935637|-31948840361129428|90933412",
         jsonStr, "Employee", "Emp-Rel1");
     confirm("Are you sure to submit form?");
-    fetch("https://api.login2explore.com:5577/api/iml",{
+    fetch("http://api.login2explore.com:5577/api/iml",{
         method:"POST",
         body:putReqStr
     })
@@ -161,7 +161,7 @@ executeGet = (ele) => {
     console.log(jsonStr);
     let getReqStr = createCmdReq("90935637|-31948840361129428|90933412", "GET", "Employee", "Emp-Rel1", jsonStr);
     console.log(getReqStr);
-    fetch("https://api.login2explore.com:5577/api/irl",{
+    fetch("http://api.login2explore.com:5577/api/irl",{
         method:"POST",
         body:getReqStr
     })
@@ -182,7 +182,7 @@ executeRem=(ele)=>{
     }
     let remjsonStr = createRemReq("90935637|-31948840361129428|90933412","REMOVE","Employee", "Emp-Rel1", jsonStr);
     // console.log(remjsonStr);
-    fetch("https://api.login2explore.com:5577/api/iml",{
+    fetch("http://api.login2explore.com:5577/api/iml",{
         method:"POST",
         body:remjsonStr
     })
@@ -201,7 +201,7 @@ executeUpdt = (ele) => {
     }
     let updtJsonReq = createUpdtreq("90935637|-31948840361129428|90933412","Employee", "Emp-Rel1", jsonStr);
     // console.log(updtJsonReq);
-    fetch("https://api.login2explore.com:5577/api/iml",{
+    fetch("http://api.login2explore.com:5577/api/iml",{
         method:"POST",
         body:updtJsonReq
     })
