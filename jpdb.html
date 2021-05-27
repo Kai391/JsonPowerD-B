@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html lang="en">
 
 <head>
@@ -13,10 +8,18 @@ and open the template in the editor.
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
 </head>
 
 <body>
-    <div class="container">
+    <br>
+    <div class="container text-right">
+        <button class="btn btn-success"value="create" onclick="container(this);">CREATE</button>
+        <button class="btn btn-primary"value="get" onclick="container(this);">GET</button>
+        <button class="btn btn-danger"value="remove" onclick="container(this);">REMOVE</button>
+        <button class="btn btn-warning"value="update" onclick="container(this);">UPDATE</button>
+    </div>
+    <div class="container form" id="create">
         <h2>Vertical (basic) form</h2>
         <form id="empForm" method="post">
             <div class="form-group">
@@ -37,83 +40,58 @@ and open the template in the editor.
             <input type="button" class="btn btn-primary" id="empSave" value="Save" onclick="saveEmployee();">
         </form>
     </div>
-    <script>
-        $("#empId").focus(); function validateAndGetFormData() {
-            var empIdVar = $("#empId").val();
-            if (empIdVar === "") {
-                alert("Employee ID Required Value");
-                $("#empId").focus();
-                return "";
-            }
-            var empNameVar = $("#empName").val();
-            if (empNameVar === "") {
-                alert("Employee Name is Required Value");
-                $("#empName").focus();
-                return "";
-            }
-            var empEmailVar = $("#empEmail").val();
-            if (empEmailVar === "") {
-                alert("Employee Email is Required Value");
-                $("#empEmail").focus();
-                return "";
-            }
-            var jsonStrObj = {
-                empId: empIdVar,
-                empName: empNameVar,
-                empEmail: empEmailVar,
-            };
-            return JSON.stringify(jsonStrObj);
-        }
-        // This method is used to create PUT Json request.
-        function createPUTRequest(connToken, jsonObj, dbName, relName) {
-            var putRequest = "{\n"
-                + "\"token\" : \""
-                + connToken
-                + "\","
-                + "\"dbName\": \""
-                + dbName
-                + "\",\n" + "\"cmd\" : \"PUT\",\n"
-                + "\"rel\" : \""
-                + relName + "\","
-                + "\"jsonStr\": \n"
-                + jsonObj
-                + "\n"
-                + "}";
-            return putRequest;
-        }
-        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
-            var url = dbBaseUrl + apiEndPointUrl;
-            var jsonObj;
-            $.post(url, reqString, function (result) {
-                jsonObj = JSON.parse(result);
-            }).fail(function (result) {
-                var dataJsonObj = result.responseText;
-                jsonObj = JSON.parse(dataJsonObj);
-            });
-            return jsonObj;
-        }
-        function resetForm() {
-            $("#empId").val("")
-            $("#empName").val("");
-            $("#empEmail").val("");
-            $("#empId").focus();
-        }
-        function saveEmployee() {
-            var jsonStr = validateAndGetFormData();
-            if (jsonStr === "") {
-                return;
-            }
-            var putReqStr = createPUTRequest("90935637|-31948840361129428|90933412",
-                jsonStr, "Employee", "Emp-Rel1");
-            alert(putReqStr);
-            jQuery.ajaxSetup({ async: false });
-            var resultObj = executeCommand(putReqStr,
-                "http://api.login2explore.com:5577", "/api/iml");
-            alert(JSON.stringify(resultObj));
-            jQuery.ajaxSetup({ async: true });
-            resetForm();
-        }
-    </script>
+    <div class="container form" id="get">
+        <div class="container">
+            <button class="btn btn-success"value="getByID" onclick="getVal(this);">GET BY ID</button>
+            <button class="btn btn-success"value="getByName" onclick="getVal(this);">GET BY Name</button>
+            <button class="btn btn-success"value="getByEmail" onclick="getVal(this);">GET BY Email</button>
+        </div>
+        <h2>Get the information about Employee</h2>
+        <div class="container get" id="getByID">
+            <label for="getempId">Employee ID:</label>
+            <br>
+            <input type="text" class="form-control" name="getempId" id="getempId" placeholder="Enter Employee ID" required>
+            <br>
+            <button value="getempId"  class="btn btn-info" onclick="executeGet(this);">Get Details</button>
+        </div>
+        <div class="container get" id="getByName">
+            <label for="getempName">Employee Name:</label>
+            <br>
+            <input type="text" class="form-control" name="getempName" id="getempName" placeholder="Enter Employee Name" required>
+            <br>
+            <button value="getempName" class="btn btn-info" onclick="executeGet(this);">Get Details</button>
+        </div>
+        <div class="container get" id="getByEmail">
+            <label for="getempId">Employee Email:</label>
+            <br>
+            <input type="text" class="form-control" name="getempEmail" id="getempEmail" placeholder="Enter Employee Email" required>
+            <br>
+            <button value="getempEmail" class="btn btn-info" onclick="executeGet(this);">Get Details</button>
+        </div>
+    </div>
+    <div class="container form" id="remove">
+        <h2>Remove the record from DataBase</h2>
+        <br>
+        <input type="text" name="record" id="record" placeholder="Enter Employee's Unique Record No." class="form-control" required>
+        <br>
+        <button value="record" class="btn btn-danger" onclick=executeRem(this);>Delete</button>
+    </div>
+    <div class="container form" id="update">
+        <h2>Update the Existing Employee Data</h2>
+        <label for="recordno">Enter the Record No:</label>
+        <input type="text" id="recordno" placeholder="Enter Employee's Unique Record No." class="form-control" required>
+        <br>
+        <label for="column">Enter the Column Name:</label>
+        <input type="text" id="column" placeholder="Enter Column Name" class="form-control" required>
+        <br>
+        <label for="value">Enter the Column Value:</label>
+        <input type="text" id="value" placeholder="Enter Column Value" class="form-control" required>
+        <br>
+        <button value="recordno column value" class="btn btn-danger" onclick="executeUpdt(this);">Update Record</button>
+    </div>
+    <div class="container" id="write"></div>
+    <script src="javascript.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
